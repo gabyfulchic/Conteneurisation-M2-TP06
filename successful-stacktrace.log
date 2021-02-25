@@ -1,0 +1,490 @@
+(conteneurisation) --- conteneurisation/tp06 ‹master* M› » docker-compose up --build       
+Building ssh-client
+Step 1/7 : FROM alpine:3.13.2
+ ---> 28f6e2705743
+Step 2/7 : RUN apk add     --update     --no-cache     openssh     rsync     && mkdir -m 0700 /root/.ssh
+ ---> Using cache
+ ---> d61c95ba08d9
+Step 3/7 : ADD ssh_config /root/.ssh/config
+ ---> Using cache
+ ---> 987b4fda76b2
+Step 4/7 : RUN chown root:root /root/.ssh/config     && chmod 0644 /root/.ssh/config
+ ---> Using cache
+ ---> 0cb2036da4a0
+Step 5/7 : ADD entrypoint.sh /entrypoint.sh
+ ---> 92851cbae4c9
+Step 6/7 : RUN chmod +x /entrypoint.sh
+ ---> Running in 26034484c263
+Removing intermediate container 26034484c263
+ ---> 396823f04195
+Step 7/7 : ENTRYPOINT ["/entrypoint.sh"]
+ ---> Running in ed91bd1248dc
+Removing intermediate container ed91bd1248dc
+ ---> 46285cafd52c
+
+Successfully built 46285cafd52c
+Successfully tagged tp06_ssh-client:latest
+Building ssh-server
+Step 1/6 : FROM alpine:3.13.2
+ ---> 28f6e2705743
+Step 2/6 : COPY sshd_config /etc/ssh/sshd_config
+ ---> Using cache
+ ---> 7bf3e67e6e99
+Step 3/6 : RUN apk add     --update     --no-cache     openssh     rsync     && mkdir -m 0700 /root/.ssh     && chmod 0644 /etc/ssh/sshd_config     && echo "root:root" | chpasswd
+ ---> Using cache
+ ---> 18e815335039
+Step 4/6 : COPY entrypoint.sh /
+ ---> Using cache
+ ---> 5c0e64f7e4b2
+Step 5/6 : RUN chmod +x /entrypoint.sh
+ ---> Using cache
+ ---> 83bc41cab13c
+Step 6/6 : ENTRYPOINT ["/entrypoint.sh"]
+ ---> Using cache
+ ---> 343643c3cdd9
+
+Successfully built 343643c3cdd9
+Successfully tagged tp06_ssh-server:latest
+Recreating ssh-client ... done
+Starting ssh-server   ... done
+Attaching to ssh-server, ssh-client
+ssh-client    | + file_path=/foo.txt
+ssh-client    | + cp /tmp/ssh/id_rsa.pub /root/.ssh/id_rsa.pub
+ssh-server    | + cp /tmp/ssh/id_rsa.pub /root/.ssh/authorized_keys
+ssh-server    | + chown root:root /root/.ssh/authorized_keys
+ssh-client    | + cp /tmp/ssh/id_rsa /root/.ssh/id_rsa
+ssh-client    | + chown root:root -R /root/.ssh/
+ssh-server    | + chmod 0600 /root/.ssh/authorized_keys
+ssh-server    | + cat /tmp/shared_folder/foo.txt
+ssh-client    | + chmod 0600 /root/.ssh/id_rsa
+ssh-client    | + chmod 0644 /root/.ssh/id_rsa.pub
+ssh-server    |                                  
+ssh-server    |                 \`*-.                    
+ssh-server    |                  )  _`-.                 
+ssh-server    |                 .  : `. .                
+ssh-server    |                 : _   '  \               
+ssh-server    |                 ; *` _.   `*-._          
+ssh-server    |                 `-.-'          `-.       
+ssh-server    |                   ;       `       `.     
+ssh-server    |                   :.       .        \    
+ssh-server    |                   . \  .   :   .-'   .   
+ssh-server    |                   '  `+.;  ;  '      :   
+ssh-server    |                   :  '  |    ;       ;-. 
+ssh-server    |                   ; '   : :`-:     _.`* ;
+ssh-server    |                .*' /  .*' ; .*`- +'  `*' 
+ssh-server    |                `*-*   `*-*  `*-*'        
+ssh-client    | + ls -alFh /tmp/ssh /root /root/.ssh/
+ssh-client    | /root:
+ssh-client    | total 20K    
+ssh-client    | drwx------    1 root     root        4.0K Feb 25 11:04 ./
+ssh-client    | drwxr-xr-x    1 root     root        4.0K Feb 25 13:20 ../
+ssh-client    | drwx------    1 root     root        4.0K Feb 25 13:20 .ssh/
+ssh-client    | 
+ssh-client    | /root/.ssh/:
+ssh-client    | total 28K    
+ssh-client    | drwx------    1 root     root        4.0K Feb 25 13:20 ./
+ssh-client    | drwx------    1 root     root        4.0K Feb 25 11:04 ../
+ssh-client    | -rw-r--r--    1 root     root         168 Feb 25 09:59 config
+ssh-client    | -rw-------    1 root     root        3.3K Feb 25 13:20 id_rsa
+ssh-client    | -rw-r--r--    1 root     root         738 Feb 25 13:20 id_rsa.pub
+ssh-client    | 
+ssh-client    | /tmp/ssh:
+ssh-client    | total 16K    
+ssh-client    | drwxr-xr-x    2 1000     1000        4.0K Feb 25 10:48 ./
+ssh-client    | drwxrwxrwt    1 root     root        4.0K Feb 25 13:20 ../
+ssh-client    | -rw-------    1 1000     1000        3.3K Feb 25 10:48 id_rsa
+ssh-client    | -rw-r--r--    1 1000     1000         738 Feb 25 10:48 id_rsa.pub
+ssh-server    | + cat /root/.ssh/authorized_keys
+ssh-server    | ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDYXC7XBN29wqmSiiJcUBl6cw9OG5hNBJ/lhJai/qrs5WWC03L03q5rrwD8zkODxY1eMMd+JApSv+I6JvT+bnjgRKLwcFPuOGzqEk4VMmKYZ5gsmKpO7b++uoQd179g+JBSYtu7HuZnvXujxT7NI0m285eSGpcEq8G76uWlqI0Oo8vTkhWXbHGaIZWSyg6v9bo1qKBUq6bnz+xvvZ+tm4B19BCIpLwS0/a3kh7ssRuxAyLuXqilB7QGdq3iQWoyzVAtsT2B0g5sF5dk2J/p5pNUESoxXOc5HUdPle170a7CV2qmjdO31kRlxWk1SjIJyIGnjYSvvn3TruvbxId1/v3FAQaO7Ol6e/723KPX5T5xG5eOOyBaeSdzl9YzDeUWf2bHadiJp1DsjyWKbgB8Ll2nSypwss9+Xes94isL2K3pXusymiYbrveER1RwhEUNpfBVyXdTn4SHXk4AVgOn5qBWkd7hvzX/nhY+bcksnMxmPNgiGuxvMR54XFNLdIA0TllyIvONXWF8tiAhP2woXwQcfRA35V8bXB3hB6j9ZEvQPlairGMJ961xMliO3hdyhoEIQL+nZVbm+Lfcn0eKPv6dF4oOUpOhsj2tCj10WfGBMQwK8281FPOTi+Ul0nEnYYTwUjhChEA7wShA8v0DfyytSwnA18Ah9z/rQ7PRgiWeBw== tp06pueducul
+ssh-client    | + sleep 5
+ssh-server    | + ls -alFh /etc/ssh/ /etc/ssh/sshd_config /root /root/.ssh
+ssh-server    | -rw-r--r--    1 root     root         339 Feb 25 13:17 /etc/ssh/sshd_config
+ssh-server    | 
+ssh-server    | /etc/ssh/:
+ssh-server    | total 624K   
+ssh-server    | drwxr-xr-x    1 root     root        4.0K Feb 25 13:17 ./
+ssh-server    | drwxr-xr-x    1 root     root        4.0K Feb 25 13:17 ../
+ssh-server    | -rw-r--r--    1 root     root      564.3K Nov 30 17:18 moduli
+ssh-server    | -rw-r--r--    1 root     root        1.5K Nov 30 17:18 ssh_config
+ssh-server    | -rw-------    1 root     root        1.3K Feb 25 13:17 ssh_host_dsa_key
+ssh-server    | -rw-r--r--    1 root     root         607 Feb 25 13:17 ssh_host_dsa_key.pub
+ssh-server    | -rw-------    1 root     root         513 Feb 25 13:17 ssh_host_ecdsa_key
+ssh-server    | -rw-r--r--    1 root     root         179 Feb 25 13:17 ssh_host_ecdsa_key.pub
+ssh-server    | -rw-------    1 root     root         411 Feb 25 13:17 ssh_host_ed25519_key
+ssh-server    | -rw-r--r--    1 root     root          99 Feb 25 13:17 ssh_host_ed25519_key.pub
+ssh-server    | -rw-------    1 root     root        2.5K Feb 25 13:17 ssh_host_rsa_key
+ssh-server    | -rw-r--r--    1 root     root         571 Feb 25 13:17 ssh_host_rsa_key.pub
+ssh-server    | -rw-r--r--    1 root     root         339 Feb 25 13:17 sshd_config
+ssh-server    | -rw-r--r--    1 root     root        3.1K Nov 30 17:18 sshd_config.apk-new
+ssh-server    | 
+ssh-server    | /root:
+ssh-server    | total 16K    
+ssh-server    | drwx------    1 root     root        4.0K Feb 25 13:17 ./
+ssh-server    | drwxr-xr-x    1 root     root        4.0K Feb 25 13:17 ../
+ssh-server    | drwx------    1 root     root        4.0K Feb 25 13:20 .ssh/
+ssh-server    | 
+ssh-server    | /root/.ssh:
+ssh-server    | total 16K    
+ssh-server    | drwx------    1 root     root        4.0K Feb 25 13:20 ./
+ssh-server    | drwx------    1 root     root        4.0K Feb 25 13:17 ../
+ssh-server    | -rw-------    1 root     root         738 Feb 25 13:20 authorized_keys
+ssh-server    | + ssh-keygen -A
+ssh-server    | + /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config
+ssh-server    | debug1: Set /proc/self/oom_score_adj from 0 to -1000
+ssh-server    | debug1: Bind to port 22 on 0.0.0.0.
+ssh-server    | Server listening on 0.0.0.0 port 22.
+ssh-client    | + true
+ssh-client    | + ssh -vvv root@ssh-server exit
+ssh-client    | OpenSSH_8.4p1, OpenSSL 1.1.1j  16 Feb 2021
+ssh-client    | debug1: Reading configuration data /root/.ssh/config
+ssh-client    | debug1: /root/.ssh/config line 1: Applying options for ssh-server
+ssh-client    | debug1: Reading configuration data /etc/ssh/ssh_config
+ssh-client    | debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/root/.ssh/known_hosts'
+ssh-client    | debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/root/.ssh/known_hosts2'
+ssh-client    | debug1: Authenticator provider $SSH_SK_PROVIDER did not resolve; disabling
+ssh-client    | debug2: resolving "ssh-server" port 22
+ssh-client    | debug2: ssh_connect_direct
+ssh-client    | debug1: Connecting to ssh-server [172.24.0.2] port 22.
+ssh-client    | debug1: Connection established.
+ssh-client    | debug1: identity file /root/.ssh/id_rsa type 0
+ssh-client    | debug1: identity file /root/.ssh/id_rsa-cert type -1
+ssh-client    | debug1: Local version string SSH-2.0-OpenSSH_8.4
+ssh-server    | debug1: Forked child 14.
+ssh-server    | debug1: Set /proc/self/oom_score_adj to 0
+ssh-server    | debug1: rexec start in 4 out 4 newsock 4 pipe 6 sock 7
+ssh-server    | debug1: inetd sockets after dupping: 4, 4
+ssh-server    | Connection from 172.24.0.3 port 38940 on 172.24.0.2 port 22 rdomain ""
+ssh-client    | debug1: Remote protocol version 2.0, remote software version OpenSSH_8.4
+ssh-client    | debug1: match: OpenSSH_8.4 pat OpenSSH* compat 0x04000000
+ssh-client    | debug2: fd 3 setting O_NONBLOCK
+ssh-client    | debug1: Authenticating to ssh-server:22 as 'root'
+ssh-client    | debug3: send packet: type 20
+ssh-client    | debug1: SSH2_MSG_KEXINIT sent
+ssh-server    | debug1: Local version string SSH-2.0-OpenSSH_8.4
+ssh-server    | debug1: Remote protocol version 2.0, remote software version OpenSSH_8.4
+ssh-server    | debug1: match: OpenSSH_8.4 pat OpenSSH* compat 0x04000000
+ssh-server    | debug1: permanently_set_uid: 22/22 [preauth]
+ssh-client    | debug3: receive packet: type 20
+ssh-client    | debug1: SSH2_MSG_KEXINIT received
+ssh-client    | debug2: local client KEXINIT proposal
+ssh-server    | debug1: list_hostkey_types: rsa-sha2-512,rsa-sha2-256,ssh-rsa,ecdsa-sha2-nistp256,ssh-ed25519 [preauth]
+ssh-client    | debug2: KEX algorithms: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256,ext-info-c
+ssh-server    | debug1: SSH2_MSG_KEXINIT sent [preauth]
+ssh-server    | debug1: SSH2_MSG_KEXINIT received [preauth]
+ssh-server    | debug1: kex: algorithm: curve25519-sha256 [preauth]
+ssh-server    | debug1: kex: host key algorithm: ecdsa-sha2-nistp256 [preauth]
+ssh-server    | debug1: kex: client->server cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none [preauth]
+ssh-server    | debug1: kex: server->client cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none [preauth]
+ssh-server    | debug1: expecting SSH2_MSG_KEX_ECDH_INIT [preauth]
+ssh-client    | debug2: host key algorithms: ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-rsa-cert-v01@openssh.com,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ecdsa-sha2-nistp256@openssh.com,ssh-ed25519,sk-ssh-ed25519@openssh.com,rsa-sha2-512,rsa-sha2-256,ssh-rsa
+ssh-client    | debug2: ciphers ctos: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+ssh-client    | debug2: ciphers stoc: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+ssh-client    | debug2: MACs ctos: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+ssh-client    | debug2: MACs stoc: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+ssh-client    | debug2: compression ctos: none,zlib@openssh.com,zlib
+ssh-client    | debug2: compression stoc: none,zlib@openssh.com,zlib
+ssh-client    | debug2: languages ctos: 
+ssh-client    | debug2: languages stoc: 
+ssh-client    | debug2: first_kex_follows 0 
+ssh-client    | debug2: reserved 0 
+ssh-client    | debug2: peer server KEXINIT proposal
+ssh-client    | debug2: KEX algorithms: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256
+ssh-client    | debug2: host key algorithms: rsa-sha2-512,rsa-sha2-256,ssh-rsa,ecdsa-sha2-nistp256,ssh-ed25519
+ssh-client    | debug2: ciphers ctos: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+ssh-client    | debug2: ciphers stoc: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+ssh-client    | debug2: MACs ctos: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+ssh-client    | debug2: MACs stoc: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+ssh-client    | debug2: compression ctos: none,zlib@openssh.com
+ssh-client    | debug2: compression stoc: none,zlib@openssh.com
+ssh-client    | debug2: languages ctos: 
+ssh-client    | debug2: languages stoc: 
+ssh-client    | debug2: first_kex_follows 0 
+ssh-client    | debug2: reserved 0 
+ssh-client    | debug1: kex: algorithm: curve25519-sha256
+ssh-client    | debug1: kex: host key algorithm: ecdsa-sha2-nistp256
+ssh-client    | debug1: kex: server->client cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none
+ssh-client    | debug1: kex: client->server cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none
+ssh-client    | debug3: send packet: type 30
+ssh-client    | debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+ssh-server    | debug1: rekey out after 134217728 blocks [preauth]
+ssh-server    | debug1: SSH2_MSG_NEWKEYS sent [preauth]
+ssh-server    | debug1: Sending SSH2_MSG_EXT_INFO [preauth]
+ssh-server    | debug1: expecting SSH2_MSG_NEWKEYS [preauth]
+ssh-client    | debug3: receive packet: type 31
+ssh-client    | debug1: Server host key: ecdsa-sha2-nistp256 SHA256:BEgAlDRo58I4X+Fyr0tXoqnCWD2hJ4WbgWkAPD6Fdbc
+ssh-client    | Warning: Permanently added 'ssh-server,172.24.0.2' (ECDSA) to the list of known hosts.
+ssh-client    | debug3: send packet: type 21
+ssh-client    | debug2: set_newkeys: mode 1
+ssh-client    | debug1: rekey out after 134217728 blocks
+ssh-client    | debug1: SSH2_MSG_NEWKEYS sent
+ssh-client    | debug1: expecting SSH2_MSG_NEWKEYS
+ssh-server    | debug1: SSH2_MSG_NEWKEYS received [preauth]
+ssh-server    | debug1: rekey in after 134217728 blocks [preauth]
+ssh-server    | debug1: KEX done [preauth]
+ssh-client    | debug3: receive packet: type 21
+ssh-client    | debug1: SSH2_MSG_NEWKEYS received
+ssh-client    | debug2: set_newkeys: mode 0
+ssh-client    | debug1: rekey in after 134217728 blocks
+ssh-client    | debug1: Will attempt key: /root/.ssh/id_rsa RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI explicit
+ssh-client    | debug2: pubkey_prepare: done
+ssh-client    | debug3: send packet: type 5
+ssh-client    | debug3: receive packet: type 7
+ssh-client    | debug1: SSH2_MSG_EXT_INFO received
+ssh-client    | debug1: kex_input_ext_info: server-sig-algs=<ssh-ed25519,sk-ssh-ed25519@openssh.com,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ecdsa-sha2-nistp256@openssh.com,webauthn-sk-ecdsa-sha2-nistp256@openssh.com>
+ssh-client    | debug3: receive packet: type 6
+ssh-client    | debug2: service_accept: ssh-userauth
+ssh-client    | debug1: SSH2_MSG_SERVICE_ACCEPT received
+ssh-client    | debug3: send packet: type 50
+ssh-server    | debug1: userauth-request for user root service ssh-connection method none [preauth]
+ssh-server    | debug1: attempt 0 failures 0 [preauth]
+ssh-client    | debug3: receive packet: type 51
+ssh-client    | debug1: Authentications that can continue: publickey
+ssh-client    | debug3: start over, passed a different list publickey
+ssh-client    | debug3: preferred publickey,keyboard-interactive,password
+ssh-client    | debug3: authmethod_lookup publickey
+ssh-client    | debug3: remaining preferred: keyboard-interactive,password
+ssh-client    | debug3: authmethod_is_enabled publickey
+ssh-client    | debug1: Next authentication method: publickey
+ssh-client    | debug1: Offering public key: /root/.ssh/id_rsa RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI explicit
+ssh-client    | debug3: send packet: type 50
+ssh-client    | debug2: we sent a publickey packet, wait for reply
+ssh-server    | debug1: userauth-request for user root service ssh-connection method publickey [preauth]
+ssh-server    | debug1: attempt 1 failures 0 [preauth]
+ssh-server    | debug1: userauth_pubkey: test pkalg rsa-sha2-512 pkblob RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI [preauth]
+ssh-client    | debug3: receive packet: type 60
+ssh-server    | debug1: temporarily_use_uid: 0/0 (e=0/0)
+ssh-client    | debug1: Server accepts key: /root/.ssh/id_rsa RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI explicit
+ssh-client    | debug3: sign_and_send_pubkey: RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI
+ssh-server    | debug1: trying public key file /root/.ssh/authorized_keys
+ssh-server    | debug1: fd 5 clearing O_NONBLOCK
+ssh-client    | debug3: sign_and_send_pubkey: signing using rsa-sha2-512 SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI
+ssh-server    | debug1: /root/.ssh/authorized_keys:1: matching key found: RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI
+ssh-server    | debug1: /root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+ssh-server    | Accepted key RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI found at /root/.ssh/authorized_keys:1
+ssh-server    | debug1: restore_uid: 0/0
+ssh-server    | Postponed publickey for root from 172.24.0.3 port 38940 ssh2 [preauth]
+ssh-client    | debug3: send packet: type 50
+ssh-server    | debug1: userauth-request for user root service ssh-connection method publickey [preauth]
+ssh-server    | debug1: attempt 2 failures 0 [preauth]
+ssh-server    | debug1: temporarily_use_uid: 0/0 (e=0/0)
+ssh-server    | debug1: trying public key file /root/.ssh/authorized_keys
+ssh-server    | debug1: fd 5 clearing O_NONBLOCK
+ssh-server    | debug1: /root/.ssh/authorized_keys:1: matching key found: RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI
+ssh-server    | debug1: /root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+ssh-server    | Accepted key RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI found at /root/.ssh/authorized_keys:1
+ssh-server    | debug1: restore_uid: 0/0
+ssh-server    | debug1: auth_activate_options: setting new authentication options
+ssh-server    | Accepted publickey for root from 172.24.0.3 port 38940 ssh2: RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI
+ssh-server    | debug1: monitor_child_preauth: root has been authenticated by privileged process
+ssh-server    | debug1: auth_activate_options: setting new authentication options [preauth]
+ssh-client    | debug3: receive packet: type 52
+ssh-client    | debug1: Authentication succeeded (publickey).
+ssh-client    | Authenticated to ssh-server ([172.24.0.2]:22).
+ssh-client    | debug2: fd 4 setting O_NONBLOCK
+ssh-client    | debug2: fd 5 setting O_NONBLOCK
+ssh-client    | debug2: fd 6 setting O_NONBLOCK
+ssh-client    | debug1: channel 0: new [client-session]
+ssh-client    | debug3: ssh_session2_open: channel_new: 0
+ssh-client    | debug2: channel 0: send open
+ssh-client    | debug3: send packet: type 90
+ssh-client    | debug1: Requesting no-more-sessions@openssh.com
+ssh-client    | debug3: send packet: type 80
+ssh-client    | debug1: Entering interactive session.
+ssh-client    | debug1: pledge: network
+ssh-client    | debug3: receive packet: type 80
+ssh-client    | debug1: client_input_global_request: rtype hostkeys-00@openssh.com want_reply 0
+ssh-client    | debug3: receive packet: type 4
+ssh-client    | debug1: Remote: /root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+ssh-server    | debug1: monitor_read_log: child log fd closed
+ssh-server    | debug1: rekey in after 134217728 blocks
+ssh-server    | debug1: rekey out after 134217728 blocks
+ssh-server    | debug1: ssh_packet_set_postauth: called
+ssh-server    | debug1: active: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+ssh-server    | debug1: Entering interactive session for SSH2.
+ssh-server    | debug1: server_init_dispatch
+ssh-server    | debug1: server_input_channel_open: ctype session rchan 0 win 2097152 max 32768
+ssh-server    | debug1: input_session_request
+ssh-server    | debug1: channel 0: new [server-session]
+ssh-server    | debug1: session_new: session 0
+ssh-server    | debug1: session_open: channel 0
+ssh-server    | debug1: session_open: session 0: link with channel 0
+ssh-server    | debug1: server_input_channel_open: confirm session
+ssh-server    | debug1: server_input_global_request: rtype no-more-sessions@openssh.com want_reply 0
+ssh-client    | debug3: receive packet: type 4
+ssh-client    | debug1: Remote: /root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+ssh-client    | debug3: receive packet: type 91
+ssh-client    | debug2: channel_input_open_confirmation: channel 0: callback start
+ssh-client    | debug2: fd 3 setting TCP_NODELAY
+ssh-client    | debug3: ssh_packet_set_tos: set IP_TOS 0x20
+ssh-client    | debug2: client_session2_setup: id 0
+ssh-client    | debug1: Sending command: exit
+ssh-client    | debug2: channel 0: request exec confirm 1
+ssh-client    | debug3: send packet: type 98
+ssh-client    | debug2: channel_input_open_confirmation: channel 0: callback done
+ssh-client    | debug2: channel 0: open confirm rwindow 0 rmax 32768
+ssh-client    | debug2: channel 0: rcvd adjust 2097152
+ssh-client    | debug3: receive packet: type 99
+ssh-client    | debug2: channel_input_status_confirm: type 99 id 0
+ssh-client    | debug2: exec request accepted on channel 0
+ssh-client    | debug2: channel 0: read<=0 rfd 4 len 0
+ssh-client    | debug2: channel 0: read failed
+ssh-client    | debug2: channel 0: chan_shutdown_read (i0 o0 sock -1 wfd 4 efd 6 [write])
+ssh-client    | debug2: channel 0: input open -> drain
+ssh-client    | debug2: channel 0: ibuf empty
+ssh-server    | debug1: server_input_channel_req: channel 0 request exec reply 1
+ssh-server    | debug1: session_by_channel: session 0 channel 0
+ssh-server    | debug1: session_input_channel_req: session 0 req exec
+ssh-server    | Starting session: command for root from 172.24.0.3 port 38940 id 0
+ssh-client    | debug2: channel 0: send eof
+ssh-client    | debug3: send packet: type 96
+ssh-client    | debug2: channel 0: input drain -> closed
+ssh-server    | debug1: Received SIGCHLD.
+ssh-server    | debug1: session_by_pid: pid 16
+ssh-server    | debug1: session_exit_message: session 0 channel 0 pid 16
+ssh-server    | debug1: session_exit_message: release channel 0
+ssh-server    | debug1: session_by_channel: session 0 channel 0
+ssh-server    | debug1: session_close_by_channel: channel 0 child 0
+ssh-server    | Close session: user root from 172.24.0.3 port 38940 id 0
+ssh-server    | debug1: channel 0: free: server-session, nchannels 1
+ssh-server    | Received disconnect from 172.24.0.3 port 38940:11: disconnected by user
+ssh-server    | Disconnected from user root 172.24.0.3 port 38940
+ssh-server    | debug1: do_cleanup
+ssh-server    | debug1: main_sigchld_handler: Child process status
+ssh-client    | debug2: channel 0: rcvd ext data 34
+ssh-client    | debug1: permanently_set_uid: 0/0
+ssh-client    | debug2: channel 0: written 34 to efd 6
+ssh-client    | debug3: receive packet: type 96
+ssh-client    | debug2: channel 0: rcvd eof
+ssh-client    | debug2: channel 0: output open -> drain
+ssh-client    | debug2: channel 0: obuf empty
+ssh-client    | debug2: channel 0: chan_shutdown_write (i3 o1 sock -1 wfd 5 efd 6 [write])
+ssh-client    | debug2: channel 0: output drain -> closed
+ssh-client    | debug3: receive packet: type 98
+ssh-client    | debug1: client_input_channel_req: channel 0 rtype exit-status reply 0
+ssh-client    | debug3: receive packet: type 97
+ssh-client    | debug2: channel 0: rcvd close
+ssh-client    | debug3: channel 0: will not send data after close
+ssh-client    | debug2: channel 0: almost dead
+ssh-client    | debug2: channel 0: gc: notify user
+ssh-client    | debug2: channel 0: gc: user detached
+ssh-client    | debug2: channel 0: send close
+ssh-client    | debug3: send packet: type 97
+ssh-client    | debug2: channel 0: is dead
+ssh-client    | debug2: channel 0: garbage collecting
+ssh-client    | debug1: channel 0: free: client-session, nchannels 1
+ssh-client    | debug3: channel 0: status: The following connections are open:
+ssh-client    |   #0 client-session (t4 r0 i3/0 o3/0 e[write]/0 fd -1/-1/6 sock -1 cc -1)
+ssh-client    | 
+ssh-client    | debug3: send packet: type 1
+ssh-client    | debug1: fd 0 clearing O_NONBLOCK
+ssh-client    | debug3: fd 1 is not O_NONBLOCK
+ssh-client    | debug1: fd 2 clearing O_NONBLOCK
+ssh-client    | Transferred: sent 3608, received 3300 bytes, in 0.1 seconds
+ssh-client    | Bytes per second: sent 70622.2, received 64593.5
+ssh-client    | debug1: Exit status 0
+ssh-client    | + '[' 0 -eq 0 ]
+ssh-client    | + rsync -v root@ssh-server:/tmp/shared_folder/foo.txt /foo.txt
+ssh-server    | debug1: Forked child 17.
+ssh-server    | debug1: Set /proc/self/oom_score_adj to 0
+ssh-server    | debug1: rexec start in 4 out 4 newsock 4 pipe 6 sock 7
+ssh-server    | debug1: inetd sockets after dupping: 4, 4
+ssh-server    | Connection from 172.24.0.3 port 38942 on 172.24.0.2 port 22 rdomain ""
+ssh-server    | debug1: Local version string SSH-2.0-OpenSSH_8.4
+ssh-server    | debug1: Remote protocol version 2.0, remote software version OpenSSH_8.4
+ssh-server    | debug1: match: OpenSSH_8.4 pat OpenSSH* compat 0x04000000
+ssh-server    | debug1: permanently_set_uid: 22/22 [preauth]
+ssh-server    | debug1: list_hostkey_types: rsa-sha2-512,rsa-sha2-256,ssh-rsa,ecdsa-sha2-nistp256,ssh-ed25519 [preauth]
+ssh-server    | debug1: SSH2_MSG_KEXINIT sent [preauth]
+ssh-server    | debug1: SSH2_MSG_KEXINIT received [preauth]
+ssh-server    | debug1: kex: algorithm: curve25519-sha256 [preauth]
+ssh-server    | debug1: kex: host key algorithm: ecdsa-sha2-nistp256 [preauth]
+ssh-server    | debug1: kex: client->server cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none [preauth]
+ssh-server    | debug1: kex: server->client cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none [preauth]
+ssh-server    | debug1: expecting SSH2_MSG_KEX_ECDH_INIT [preauth]
+ssh-server    | debug1: rekey out after 134217728 blocks [preauth]
+ssh-server    | debug1: SSH2_MSG_NEWKEYS sent [preauth]
+ssh-server    | debug1: Sending SSH2_MSG_EXT_INFO [preauth]
+ssh-server    | debug1: expecting SSH2_MSG_NEWKEYS [preauth]
+ssh-server    | debug1: SSH2_MSG_NEWKEYS received [preauth]
+ssh-server    | debug1: rekey in after 134217728 blocks [preauth]
+ssh-server    | debug1: KEX done [preauth]
+ssh-server    | debug1: userauth-request for user root service ssh-connection method none [preauth]
+ssh-server    | debug1: attempt 0 failures 0 [preauth]
+ssh-server    | debug1: userauth-request for user root service ssh-connection method publickey [preauth]
+ssh-server    | debug1: attempt 1 failures 0 [preauth]
+ssh-server    | debug1: userauth_pubkey: test pkalg rsa-sha2-512 pkblob RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI [preauth]
+ssh-server    | debug1: temporarily_use_uid: 0/0 (e=0/0)
+ssh-server    | debug1: trying public key file /root/.ssh/authorized_keys
+ssh-server    | debug1: fd 5 clearing O_NONBLOCK
+ssh-server    | debug1: /root/.ssh/authorized_keys:1: matching key found: RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI
+ssh-server    | debug1: /root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+ssh-server    | Accepted key RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI found at /root/.ssh/authorized_keys:1
+ssh-server    | debug1: restore_uid: 0/0
+ssh-server    | Postponed publickey for root from 172.24.0.3 port 38942 ssh2 [preauth]
+ssh-server    | debug1: userauth-request for user root service ssh-connection method publickey [preauth]
+ssh-server    | debug1: attempt 2 failures 0 [preauth]
+ssh-server    | debug1: temporarily_use_uid: 0/0 (e=0/0)
+ssh-server    | debug1: trying public key file /root/.ssh/authorized_keys
+ssh-server    | debug1: fd 5 clearing O_NONBLOCK
+ssh-server    | debug1: /root/.ssh/authorized_keys:1: matching key found: RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI
+ssh-server    | debug1: /root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+ssh-server    | Accepted key RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI found at /root/.ssh/authorized_keys:1
+ssh-server    | debug1: restore_uid: 0/0
+ssh-server    | debug1: auth_activate_options: setting new authentication options
+ssh-server    | Accepted publickey for root from 172.24.0.3 port 38942 ssh2: RSA SHA256:HGAhn+Sgov2gkGzSMH8dR71bFM1qPB/t1/pAzUavguI
+ssh-server    | debug1: monitor_child_preauth: root has been authenticated by privileged process
+ssh-server    | debug1: auth_activate_options: setting new authentication options [preauth]
+ssh-server    | debug1: monitor_read_log: child log fd closed
+ssh-server    | debug1: rekey in after 134217728 blocks
+ssh-server    | debug1: rekey out after 134217728 blocks
+ssh-server    | debug1: ssh_packet_set_postauth: called
+ssh-server    | debug1: active: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+ssh-server    | debug1: Entering interactive session for SSH2.
+ssh-server    | debug1: server_init_dispatch
+ssh-server    | debug1: server_input_channel_open: ctype session rchan 0 win 2097152 max 32768
+ssh-server    | debug1: input_session_request
+ssh-server    | debug1: channel 0: new [server-session]
+ssh-server    | debug1: session_new: session 0
+ssh-server    | debug1: session_open: channel 0
+ssh-server    | debug1: session_open: session 0: link with channel 0
+ssh-server    | debug1: server_input_channel_open: confirm session
+ssh-server    | debug1: server_input_global_request: rtype no-more-sessions@openssh.com want_reply 0
+ssh-server    | debug1: server_input_channel_req: channel 0 request exec reply 1
+ssh-server    | debug1: session_by_channel: session 0 channel 0
+ssh-server    | debug1: session_input_channel_req: session 0 req exec
+ssh-server    | Starting session: command for root from 172.24.0.3 port 38942 id 0
+ssh-client    | debug1: permanently_set_uid: 0/0
+ssh-client    | foo.txt
+ssh-client    | 
+ssh-client    | sent 43 bytes  received 708 bytes  1,502.00 bytes/sec
+ssh-client    | total size is 622  speedup is 0.83
+ssh-server    | debug1: Received SIGCHLD.
+ssh-server    | debug1: session_by_pid: pid 19
+ssh-server    | debug1: session_exit_message: session 0 channel 0 pid 19
+ssh-server    | debug1: session_exit_message: release channel 0
+ssh-server    | Received disconnect from 172.24.0.3 port 38942:11: disconnected by user
+ssh-server    | Disconnected from user root 172.24.0.3 port 38942
+ssh-server    | debug1: do_cleanup
+ssh-server    | debug1: main_sigchld_handler: Child process status
+ssh-client    | + '[' 0 -eq 0 ]
+ssh-client    | + cat /foo.txt
+ssh-client    |                                  
+ssh-client    |                 \`*-.                    
+ssh-client    |                  )  _`-.                 
+ssh-client    |                 .  : `. .                
+ssh-client    |                 : _   '  \               
+ssh-client    |                 ; *` _.   `*-._          
+ssh-client    |                 `-.-'          `-.       
+ssh-client    |                   ;       `       `.     
+ssh-client    |                   :.       .        \    
+ssh-client    |                   . \  .   :   .-'   .   
+ssh-client    |                   '  `+.;  ;  '      :   
+ssh-client    |                   :  '  |    ;       ;-. 
+ssh-client    |                   ; '   : :`-:     _.`* ;
+ssh-client    |                .*' /  .*' ; .*`- +'  `*' 
+ssh-client    |                `*-*   `*-*  `*-*'        
+ssh-client    | + echo 'SUCCESS - we have well copied the file from the ssh-server by using rsync over ssh !'
+ssh-client    | + exit 0
+ssh-client    | SUCCESS - we have well copied the file from the ssh-server by using rsync over ssh !
+ssh-client exited with code 0
+
