@@ -7,7 +7,7 @@ ListenAddress 0.0.0.0
 LogLevel DEBUG
 
 # Authentication:
-PermitRootLogin yes
+PermitRootLogin without-password
 StrictModes no
 MaxAuthTries 4
 MaxSessions 10
@@ -15,3 +15,4 @@ PubkeyAuthentication yes
 AuthorizedKeysFile      %h/.ssh/authorized_keys
 PasswordAuthentication no
 ChallengeResponseAuthentication no
+IgnoreUserKnownHosts no

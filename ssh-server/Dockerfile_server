@@ -8,7 +8,8 @@ RUN apk add \
     openssh \
     rsync \
     && mkdir -m 0700 /root/.ssh \
-    && chmod 0644 /etc/ssh/sshd_config
+    && chmod 0644 /etc/ssh/sshd_config \
+    && echo "root:root" | chpasswd
 
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh

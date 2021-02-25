@@ -10,7 +10,7 @@ chown root:root -R /root/.ssh/
 chmod 0600 /root/.ssh/id_rsa
 chmod 0644 /root/.ssh/id_rsa.pub
 
-# some permissions checks
+# some permissions checks.
 ls -alFh /tmp/ssh /root /root/.ssh/
 
 # wait until sshd well started on the other container.
