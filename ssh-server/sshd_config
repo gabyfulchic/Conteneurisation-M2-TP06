@@ -1,0 +1,17 @@
+# Network
+Port 22
+AddressFamily any
+ListenAddress 0.0.0.0
+
+# Logging
+LogLevel DEBUG
+
+# Authentication:
+PermitRootLogin yes
+StrictModes no
+MaxAuthTries 4
+MaxSessions 10
+PubkeyAuthentication yes
+AuthorizedKeysFile      %h/.ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no

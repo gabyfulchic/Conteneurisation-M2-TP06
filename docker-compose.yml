@@ -1,0 +1,26 @@
+version: "3.7"
+services:
+  ssh-client:
+    container_name: ssh-client
+    build:
+      context: ./ssh-client
+      dockerfile: Dockerfile_client
+    volumes:
+      - ./ssh:/tmp/ssh
+    networks:
+      - foobar
+  ssh-server:
+    container_name: ssh-server
+    build:
+      context: ./ssh-server
+      dockerfile: Dockerfile_server
+    ports:
+      - "22"
+    volumes:
+      - ./shared_folder:/tmp/shared_folder
+      - ./ssh:/tmp/ssh
+    networks:
+      - foobar
+networks:
+  foobar:
+    internal: true

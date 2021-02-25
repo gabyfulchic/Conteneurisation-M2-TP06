@@ -1,0 +1,16 @@
+FROM alpine:3.13.2
+
+COPY sshd_config /etc/ssh/sshd_config
+
+RUN apk add \
+    --update \
+    --no-cache \
+    openssh \
+    rsync \
+    && mkdir -m 0700 /root/.ssh \
+    && chmod 0644 /etc/ssh/sshd_config
+
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

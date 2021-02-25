@@ -1,0 +1,8 @@
+Host ssh-server
+  Port 22
+  User root
+  IdentitiesOnly yes
+  Hostname ssh-server
+  PubkeyAuthentication yes
+  StrictHostKeyChecking no
+  IdentityFile /root/.ssh/id_rsa
